@@ -22,6 +22,7 @@ import { useAuth } from 'src/hooks/useAuth'
 
 // ** Type Imports
 import { Settings } from 'src/@core/context/settingsContext'
+import { useUser } from '@auth0/nextjs-auth0/client'
 
 interface Props {
   settings: Settings
@@ -46,6 +47,10 @@ const UserDropdown = (props: Props) => {
   // ** Hooks
   const router = useRouter()
   const { logout } = useAuth()
+
+  const { user } = useUser()
+
+  if (!user) return null
 
   // ** Vars
   const { direction } = settings
@@ -94,10 +99,10 @@ const UserDropdown = (props: Props) => {
         }}
       >
         <Avatar
-          alt='John Doe'
+          alt={user.name || ''}
           onClick={handleDropdownOpen}
           sx={{ width: 40, height: 40 }}
-          src='/images/avatars/1.png'
+          src={user.picture || ''}
         />
       </Badge>
       <Menu
@@ -118,12 +123,17 @@ const UserDropdown = (props: Props) => {
                 horizontal: 'right'
               }}
             >
-              <Avatar alt='John Doe' src='/images/avatars/1.png' sx={{ width: '2.5rem', height: '2.5rem' }} />
+              <Avatar
+                alt={user.name || ''}
+                onClick={handleDropdownOpen}
+                sx={{ width: '2.5rem', height: '2.5rem' }}
+                src={user.picture || ''}
+              />
             </Badge>
             <Box sx={{ display: 'flex', ml: 3, alignItems: 'flex-start', flexDirection: 'column' }}>
-              <Typography sx={{ fontWeight: 600 }}>John Doe</Typography>
+              <Typography sx={{ fontWeight: 600 }}>{user?.name}</Typography>
               <Typography variant='body2' sx={{ fontSize: '0.8rem', color: 'text.disabled' }}>
-                Admin
+                {user?.email}
               </Typography>
             </Box>
           </Box>
